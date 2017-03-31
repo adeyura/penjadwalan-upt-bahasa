@@ -3,6 +3,7 @@
 	class Pengajar {
 		/* Member variables */
 		public static $lastPengajarId;
+		public $duration;
 		public $pengajarId;
 		public $name;
 		public $kelasName;
