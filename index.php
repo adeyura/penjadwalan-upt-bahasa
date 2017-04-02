@@ -9,8 +9,8 @@
     Data kelas kursus:
     <input type="file" name="dataKelasKursus" id="fileToUpload">
 	<br>
-    Data pengajar:
-    <input type="file" name="dataPengajar" id="fileToUpload">
+    Data ruang:
+    <input type="file" name="dataRuang" id="fileToUpload">
 	<br>
     <input type="submit" value="Jadwalkan" name="submit">	
 </form>
