@@ -3,7 +3,6 @@
 	class Pengajar {
 		/* Member variables */
 		public static $lastPengajarId;
-		public $duration;
 		public $pengajarId;
 		public $name;
 		public $kelasName;
@@ -16,12 +15,12 @@
 		public $currentDay;
 
 		/* Member functions */
-		public function __construct($nm, $s, $e, $dur, $d1, $d2, $d3, $d4, $d5) {
+		public function __construct($nm, $s, $e, $kls, $d1, $d2, $d3, $d4, $d5) {
 
 			$this->name = $nm;
 			$this->start = $s;
 			$this->end = $e;
-			$this->duration = $dur;
+			$this->kelasName = $kls;
 			$this->days[1] = $d1;
 			$this->days[2] = $d2;
 			$this->days[3] = $d3;
@@ -46,9 +45,9 @@
 		function getEndTime(){
 			return $this->end;
 		}
-
-		function getDuration(){
-			return $this->duration;
+		
+		function getKelasName() {
+			return $this->kelasName;
 		}
 		
 		function getCurrentRuang() {
@@ -79,12 +78,11 @@
 	
 	Pengajar::$lastPengajarId = 1;
 	
-	$pengajar = new Pengajar("ade", 1, 2, 3, 1, 1, 1, 1, 1);
+/*	$pengajar = new Pengajar("ade", 1, 2, 3, 1, 1, 1, 1, 1);
 	echo $pengajar->getId();
 	echo $pengajar->getName();
 	echo $pengajar->getStartTime();
 	echo $pengajar->getEndTime();
-	echo $pengajar->getDuration();
 	echo $pengajar->isDayAvail(1);
-	echo "\n";
+	echo "\n";*/
 ?>

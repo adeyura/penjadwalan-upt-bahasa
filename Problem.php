@@ -1,65 +1,80 @@
 <?php
+	include('Pengajar.php');
+	include('Kelas.php');
+	include('Ruang.php');
 	class Problem {
 		/* Member variables */
-		public static $lastRuangId;
-		public $ruangId;
-		public $ruangName;
-		public $start;
-		public $end; 
-		public $days = array(1,1,1,1,1,1);
+		public $nRooms;
+		public $nCourses;
+		public $rooms;
+		public $courses;
+		public $teachers;
 
 		/* Member functions */
-		public function __construct($nm, $s, $e, $d1, $d2, $d3, $d4, $d5) {
-
-			$this->name = $nm;
-			$this->start = $s;
-			$this->end = $e;
-			$this->days[1] = $d1;
-			$this->days[2] = $d2;
-			$this->days[3] = $d3;
-			$this->days[4] = $d4;
-			$this->days[5] = $d5;
-			$this->ruangId = Ruang::$lastRuangId;
-		}
-
-
-		function getId(){
-			return $this->ruangId;
-		}
-
-		function getName() {
-			return $this->name;
-		}
-		
-		function getStartTime(){
-			return $this->start;
-		}
-
-		function getEndTime(){
-			return $this->end;
-		}
-		
-		
-		//predikat
-		function isDayAvail($i) {
-			return $this->days[$i];
-		}
-		
-		function isTimeAvail($b, $e) {
-			return ($this->start <= $b && $b <= $this->end && $this->start <= $e && $e <= $this->end);
-		}
-		
-		function isAvailable($day, $b, $e) {
-			return isDayAvail($day) && isTimeAvail($b, $e);
+		public function __construct() {
+			/*** BACA DATA PENGAJAR ***/
+			$dataPengajar = $_FILES['dataPengajar']['tmp_name'];
+			$arrayPengajar = array();
+			$handle = fopen($dataPengajar, "r");
+			if ($handle) {
+				while (($line = fgets($handle)) !== false) {
+					$arrayPengajar[] = array($line);
+				}
+			}
+			fclose($handle);
+			
+			foreach ($arrayPengajar as $pengajar) {
+				$pengajarDetail = explode(";", $pengajar[0]);
+//				print_r($pengajarDetail);
+				$this->teachers[] = new Pengajar($pengajarDetail[0], $pengajarDetail[1], $pengajarDetail[2], $pengajarDetail[3],
+							$pengajarDetail[4], $pengajarDetail[5], $pengajarDetail[6], $pengajarDetail[7], $pengajarDetail[8]);
+			}
+			print_r($this->teachers);
+			echo "<br><br>";
+			
+			
+			/**** BACA DATA KELAS KURSUS ****/
+			$dataKelasKursus = $_FILES['dataKelasKursus']['tmp_name'];
+			$arrayKelasKursus = array();
+			$handle = fopen($dataKelasKursus, "r");
+			if ($handle) {
+				while (($line = fgets($handle)) !== false) {
+					$arrayKelasKursus[] = array($line);
+				}
+			}
+			fclose($handle);
+			
+			foreach ($arrayKelasKursus as $kelasKursus) {
+				$kelasKursusDetail = explode(";", $kelasKursus[0]);
+//				print_r($kelasKursusDetail);
+				$this->courses[] = new Kelas($kelasKursusDetail[0], $kelasKursusDetail[1], $kelasKursusDetail[2], $kelasKursusDetail[3],
+								$kelasKursusDetail[4], $kelasKursusDetail[5], $kelasKursusDetail[6], $kelasKursusDetail[7]);
+			}
+			print_r($this->courses);
+			
+			echo "<br><br>";
+			
+			/**** BACA DATA RUANG ***/
+			$dataRuang = $_FILES['dataRuang']['tmp_name'];
+			$arrayRuang = array();
+			$handle = fopen($dataRuang, "r");
+			if ($handle) {
+				while (($line = fgets($handle)) !== false) {
+					$arrayRuang[] = array($line);
+				}
+			}
+			fclose($handle);
+			
+			foreach ($arrayRuang as $ruang) {
+				$ruangDetail = explode(";", $ruang[0]);
+//				print_r($ruangDetail);
+				$this->rooms[] = new Ruang($ruang[0]);
+			}
+			print_r($this->rooms);
+			
+			echo "<br><br>";
 		}
 	}
 	
-	Ruang::$lastRuangId = 1;
-	
-	$ruang = new Ruang("7602", 1, 2, 1, 1, 1, 1, 1);
-	echo $ruang->getId();
-	echo $ruang->getName();
-	echo $ruang->getStartTime();
-	echo $ruang->getEndTime();
-	echo $ruang->isDayAvail(1);
+	$problem = new Problem;
 ?>

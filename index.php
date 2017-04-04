@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<form action="jadwal.php" method="post" enctype="multipart/form-data">
+<form action="Problem.php" method="post" enctype="multipart/form-data">
     Data pengajar:
     <input type="file" name="dataPengajar" id="fileToUpload">
 	<br>
