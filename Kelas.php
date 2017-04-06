@@ -6,7 +6,10 @@
 		public $name;
 		public $defaultstart;
 		public $defaultend;
-		public $defaultdays = array(1,1,1,1,1,1);
+		public $defaultdays = array(0,1,1,1,1,1);
+		
+		public $currentPengajar;
+		public $currentRuang;
 
 		/* Member functions */
 		public function __construct($nm, $s, $e, $d1, $d2, $d3, $d4, $d5) {
@@ -37,6 +40,14 @@
 			return $this->defaultend;
 		}
 		
+		function getCurrentPengajar() {
+			return $this->currentPengajar;
+		}
+		
+		function getCurrentRuang() {
+			return $this->currentRuang;
+		}
+		
 		//predikat
 		function isDayDefault($i) {
 			return $this->defaultdays[$i];
@@ -51,7 +62,7 @@
 		}
 	}
 	
-	Kelas::$lastKelasId = 1;
+	Kelas::$lastKelasId = 0;
 /*	
 	$kelas = new Kelas("waw");
 	echo $kelas->getId();

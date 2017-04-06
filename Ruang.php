@@ -22,7 +22,7 @@
 		}
 	}
 	
-	Ruang::$lastRuangId = 1;
+	Ruang::$lastRuangId = 0;
 /*	
 	$ruang = new Ruang("7602", 1, 2, 1, 1, 1, 1, 1);
 	echo $ruang->getId();

@@ -8,11 +8,12 @@
 		public $kelasName;
 		public $start;
 		public $end; 
-		public $days = array(1,1,1,1,1,1);
+		public $days = array(0,1,1,1,1,1);
 
 		public $currentRuang;
 		public $currentStartTime;
 		public $currentDay;
+		public $isAssigned;
 
 		/* Member functions */
 		public function __construct($nm, $s, $e, $kls, $d1, $d2, $d3, $d4, $d5) {
@@ -26,6 +27,7 @@
 			$this->days[3] = $d3;
 			$this->days[4] = $d4;
 			$this->days[5] = $d5;
+			$this->isAssigned = 0;
 			$this->pengajarId = Pengajar::$lastPengajarId++;
 		}
 
@@ -74,9 +76,13 @@
 		function isAvailable($day, $b, $e) {
 			return isDayAvail($day) && isTimeAvail($b, $e);
 		}
+		
+		function isAssigned() {
+			return $this->isAssigned;
+		}
 	}
 	
-	Pengajar::$lastPengajarId = 1;
+	Pengajar::$lastPengajarId = 0;
 	
 /*	$pengajar = new Pengajar("ade", 1, 2, 3, 1, 1, 1, 1, 1);
 	echo $pengajar->getId();
