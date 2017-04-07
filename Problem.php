@@ -266,8 +266,105 @@
 			}
 			return $count;
 		}
+		
+		public function saveToDatabase() {
+			$servername = "localhost";
+			$username = "root";
+			$password = "";
+			$dbname = "penjadwalan_upt";
+
+			// Create connection
+			$conn = mysqli_connect($servername, $username, $password, $dbname);
+			// Check connection
+			if (!$conn) {
+				die("Connection failed: " . mysqli_connect_error());
+			}
+			
+			
+			/***** TABEL PENGAJAR ****/
+			mysqli_query($conn,'TRUNCATE TABLE pengajar');
+			foreach($this->teachers as $teacher) {		
+				$sql = $conn->prepare("INSERT INTO pengajar (nama, nama_kelas, start, end, senin, selasa, rabu, kamis, jumat)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)") ;
+				
+				$sql->bind_param("ssddiiiii", $nama, $nama_kelas, $start, $end, $senin, $selasa, $rabu, $kamis, $jumat);
+				
+				$nama = $teacher->getName();
+				$nama_kelas = $teacher->getKelasName();
+				$start = $teacher->getStartTime();
+				$end = $teacher->getEndTime();
+				$senin = $teacher->isDayAvail(1);
+				$selasa = $teacher->isDayAvail(2);
+				$rabu = $teacher->isDayAvail(3);
+				$kamis = $teacher->isDayAvail(4);
+				$jumat = $teacher->isDayAvail(5);
+				
+				$sql->execute();
+				
+			}
+			
+			/****** TABEL KELAS *********/
+			mysqli_query($conn,'TRUNCATE TABLE kelas');
+			foreach($this->courses as $course) {		
+				$sql = $conn->prepare("INSERT INTO kelas (nama, start, end, senin, selasa, rabu, kamis, jumat)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)") ;
+				
+				$sql->bind_param("sddiiiii", $nama, $start, $end, $senin, $selasa, $rabu, $kamis, $jumat);
+				
+				$nama = $course->getName();
+				$start = $course->getStartTime();
+				$end = $course->getEndTime();
+				$senin = $course->isDayDefault(1);
+				$selasa = $course->isDayDefault(2);
+				$rabu = $course->isDayDefault(3);
+				$kamis = $course->isDayDefault(4);
+				$jumat = $course->isDayDefault(5);
+				
+				$sql->execute();
+				
+			}
+			
+			/****** TABEL RUANG *****/
+			mysqli_query($conn,'TRUNCATE TABLE ruang');
+			foreach($this->rooms as $room) {		
+				$sql = $conn->prepare("INSERT INTO ruang (nama)
+				VALUES (?)") ;
+				
+				$sql->bind_param("s", $nama);
+				
+				$nama = $room->getName();
+				
+				$sql->execute();
+				
+			}			
+
+			mysqli_query($conn,'TRUNCATE TABLE jadwal');
+			foreach($this->courses as $course) {		
+				$sql = $conn->prepare("INSERT INTO jadwal (nama_kelas, nama_pengajar, nama_ruang, start, end, senin, selasa, rabu, kamis, jumat)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)") ;
+				
+				$sql->bind_param("sssddiiiii", $nama_kelas, $nama_pengajar, $nama_ruang, $start, $end, $senin, $selasa, $rabu, $kamis, $jumat);
+				
+				$nama_kelas = $course->getName();
+				$nama_pengajar = $this->teachers[$course->getCurrentPengajar()]->getName();
+				$nama_ruang = $course->getCurrentRuang();
+				$start = $course->getStartTime();
+				$end = $course->getEndTime();
+				$senin = $course->isDayDefault(1);
+				$selasa = $course->isDayDefault(2);
+				$rabu = $course->isDayDefault(3);
+				$kamis = $course->isDayDefault(4);
+				$jumat = $course->isDayDefault(5);
+				
+				$sql->execute();
+				
+			}	
+			
+			mysqli_close($conn);
+		}
 	}
 	
 	$problem = new Problem;
 	$problem->solve(1, 0.002, 10, 600);
+	$problem->saveToDatabase();
 ?>
