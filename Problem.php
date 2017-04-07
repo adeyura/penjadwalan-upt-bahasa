@@ -10,6 +10,12 @@
 		public $courses;
 		public $teachers;
 
+		public $idChangedKelas;
+		public $idOldPengajar;
+		public $idOldRuang;
+		public $idNewPengajar;
+		public $idNewRuang;
+		
 		/* Member functions */
 		public function __construct() {
 			/*** BACA DATA PENGAJAR ***/
@@ -73,6 +79,12 @@
 			print_r($this->rooms);
 			
 			echo "<br><br>";
+			
+			$this->idChangedKelas = 0;
+			$this->idOldPengajar = 0;
+			$this->idOldRuang = 0;
+			$this->idNewPengajar = 0;
+			$this->idNewRuang = 0;
 		}
 		
 		public function initByRandom() {
@@ -127,9 +139,10 @@
 				echo " ";
 				echo $course->getCurrentRuang();
 				echo " ";
-				echo $course->getCurrentPengajar();
+				echo $this->teachers[$course->getCurrentPengajar()]->getName();
 				echo "<br>";
 			}
+			echo "<br>";
 		}
 		
 		public function solve($temperature, $descentRate, $n, $maxSteps) {
@@ -139,56 +152,71 @@
 			$tempEvalValue = $this->countConflictCourses();
 			
 			while($tempEvalValue > 0 && $stepCounter++ < $maxSteps) {
-				echo "Eval ";
+				foreach ($this->courses as $course) {
+					echo $course->getName();
+					echo " ";
+					echo $course->getCurrentRuang();
+					echo " ";
+					echo $this->teachers[$course->getCurrentPengajar()]->getName();
+					echo "<br>";
+				}
+				echo "Nilai Eval ";
 				echo $tempEvalValue;
-				echo "<br>";
+				echo "<br><br>";
 				for($i = 0; $i < $n; $i++) {
-					$tempSolution = $this->modifySolution($this);
+					$this->modifySolution(); // temporary
 					$newEvalValue = 0;
-					if($tempSolution != null) {
-						$newEvalValue = $tempSolution->countConflictCourses();
-					}
+					$newEvalValue = $this->countConflictCourses();
 					$deltaEval = $newEvalValue - $tempEvalValue;
 					if($deltaEval < 0) {
-						$name = 'this';
-						$$name = $tempSolution;
 						$tempEvalValue = $this->countConflictCourses();
-					} else if (exp(-$deltaEval/max(0.0, $temperature)) > ((float) mt_rand() / (float) mt_getrandmax())) {
-						$name = 'this';
-						$$name = $tempSolution;
+					} else if (exp(-$deltaEval/max(0.00000001, $temperature)) > ((float) mt_rand() / (float) mt_getrandmax())) {
 						$tempEvalValue = $this->countConflictCourses();
+					} else {
+						$this->courses[$this->idChangedKelas]->currentPengajar = $this->idOldPengajar;
+						$this->courses[$this->idChangedKelas]->currentRuang = $this->idOldRuang;
 					}
 					if ($tempEvalValue == 0) break;
 				}
 				$temperature = $temperature - $descentRate;
 			}
+			foreach ($this->courses as $course) {
+				echo $course->getName();
+				echo " ";
+				echo $course->getCurrentRuang();
+				echo " ";
+				echo $this->teachers[$course->getCurrentPengajar()]->getName();
+				echo "<br>";
+			}
+			echo "Nilai Eval ";
+			echo $tempEvalValue;
+			echo "<br><br>";
 		}
 		
-		public function modifySolution($p) {
-			$j = rand(0, count($p->courses) - 1);
-			if($p->courses[$j]->getCurrentPengajar() != null) {
-				$p->teachers[$p->courses[$j]->getCurrentPengajar()]->isAssigned = 0;
-			}
-			
+		public function modifySolution() {
+			$this->idChangedKelas = rand(0, count($this->courses) - 1);
+//			if($p->courses[$j]->getCurrentPengajar() != null) {
+				$this->teachers[$this->courses[$this->idChangedKelas]->getCurrentPengajar()]->isAssigned = 0;
+//			}
+			$this->idOldPengajar = $this->courses[$this->idChangedKelas]->getCurrentPengajar();
+			$this->idOldRuang = $this->courses[$this->idChangedKelas]->getCurrentRuang();
 			
 			$i = null;
-			
-			
 			// Set Pengajar
 			do {
 				$valid = true;
 				do {
 					do {
-						$i = rand(0, count($p->teachers) - 1);
-					} while ($p->teachers[$i]->isAssigned == 1);
+						$i = rand(0, count($this->teachers) - 1);
+					} while ($this->teachers[$i]->isAssigned == 1);
 					
-				} while (!(strpos($p->courses[$j]->getName(), $p->teachers[$i]->getKelasName()) !== false)
-					|| !($p->teachers[$i]->isTimeAvail($p->courses[$j]->getStartTime(), $p->courses[$j]->getEndTime())));
+				} while (!(strpos($this->courses[$this->idChangedKelas]->getName(), $this->teachers[$i]->getKelasName()) !== false)
+					|| !($this->teachers[$i]->isTimeAvail($this->courses[$this->idChangedKelas]->getStartTime(), $this->courses[$this->idChangedKelas]->getEndTime())));
 				// berhenti sampai nama kelas sama dan waktu mengajar memenuhi	
 				
-				foreach ($p->courses[$j]->defaultdays as $key=>$val) {
+				foreach ($this->courses[$this->idChangedKelas]->defaultdays as $key=>$val) {
 					if($val == 1) {
-						if(!$p->teachers[$i]->isDayAvail($key)) {
+						if(!$this->teachers[$i]->isDayAvail($key)) {
 
 							$valid = false;
 							// tidak valid jika guru tersebut tidak available saat jam kursus
@@ -197,23 +225,24 @@
 				}
 			} while (!$valid);
 			
-			$p->courses[$j]->currentPengajar = $p->teachers[$i]->getId();
-			$p->teachers[$i]->isAssigned = 1;
-			
-			
-			
+			$this->courses[$this->idChangedKelas]->currentPengajar = $this->teachers[$i]->getId();
+			$this->teachers[$i]->isAssigned = 1;
+						
 			// Set Ruang
-			$j = array_rand($p->rooms);
-			$p->courses[$j]->currentRuang = $p->rooms[$j]->getName();
-
-			foreach ($p->courses as $course) {
+			$j = array_rand($this->rooms);
+			$this->courses[$this->idChangedKelas]->currentRuang = $this->rooms[$j]->getName();
+		
+			$idNewPengajar = $this->courses[$this->idChangedKelas]->getCurrentPengajar();
+			$idNewRuang = $this->courses[$this->idChangedKelas]->getCurrentRuang();
+		/*
+			foreach ($this->courses as $course) {
 				echo $course->getName();
 				echo " ";
 				echo $course->getCurrentRuang();
 				echo " ";
 				echo $course->getCurrentPengajar();
 				echo "<br>";
-			}
+			}*/
 		}
 		
 		public function countConflictCourses() {
@@ -227,8 +256,8 @@
 								$countSameDay++;
 							} 
 						}
-						$maks = max($this->courses[$i]->getStartTime(), $this->courses[$i]->getStartTime());
-						$minim = min($this->courses[$i]->getEndTime(), $this->courses[$i]->getEndTime());
+						$maks = max($this->courses[$i]->getStartTime(), $this->courses[$j]->getStartTime());
+						$minim = min($this->courses[$i]->getEndTime(), $this->courses[$j]->getEndTime());
 						if($maks <= $minim) {
 							$count += $countSameDay * ($minim - $maks);
 						}
@@ -240,5 +269,5 @@
 	}
 	
 	$problem = new Problem;
-	$problem->solve(1, 0.002, 100, 600);
+	$problem->solve(1, 0.002, 10, 600);
 ?>
