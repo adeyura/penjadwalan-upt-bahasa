@@ -1,4 +1,19 @@
 <!DOCTYPE html>
+<?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "penjadwalan_upt";
+
+	// Create connection
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+	// Check connection
+	if (!$conn) {
+		die("Connection failed: " . mysqli_connect_error());
+	}
+	
+	
+?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -47,9 +62,9 @@
                 <div class="col-md-12">
                     <div class="navbar-collapse collapse ">
                         <ul id="menu-top" class="nav navbar-nav navbar-right">
-                            <li><a  href="index.html">Dashboard</a></li>
-                            <li><a href="table.html">Jadwal</a></li>
-                            <li><a class="menu-top-active" href="pengajar.html">Daftar Pengajar</a></li>
+                            <li><a  href="index.php">Dashboard</a></li>
+                            <li><a href="jadwal.php">Jadwal</a></li>
+                            <li><a class="menu-top-active" href="daftarpengajar.php">Daftar Pengajar</a></li>
 
                         </ul>
                     </div>
@@ -82,72 +97,25 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Mark Anthony</td>
-                                            <td>Bahasa Inggris</td>
+										<?php
+											$sql = "SELECT * FROM pengajar";
+											$result = $conn->query($sql);
 
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Jesslyn Wang</td>
-                                            <td>Bahasa India</td>
+											if ($result->num_rows > 0) {
+												// output data of each row
+												while($row = $result->fetch_assoc()) {
+										?>
+			                                        <tr>
+														<td><?php echo $row['id']; ?></td>
+														<td><?php echo $row['nama']; ?></td>
+														<td><?php echo $row['nama_kelas']; ?></td>
 
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Kiara White</td>
-                                            <td>Bahasa Arab</td>
-
-                                        </tr>
-                                         <tr>
-                                            <td>4</td>
-                                            <td>Soepono</td>
-                                            <td>Bahasa Indonesia</td>
-
-                                        </tr>
-                                                                                 <tr>
-                                            <td>5</td>
-                                            <td>Calista</td>
-                                            <td>Bahasa Korea</td>
-
-                                        </tr>
-                                                                                 <tr>
-                                            <td>6</td>
-                                            <td>Kim Jong Suk</td>
-                                            <td>Bahasa Sansekerta</td>
-
-                                        </tr>
-                                                                                 <tr>
-                                            <td>7</td>
-                                            <td>Pevita Pearce</td>
-                                            <td>Bahasa Prancis</td>
-
-                                        </tr>
-                                                                                 <tr>
-                                            <td>8</td>
-                                            <td>Maria Mercedes</td>
-                                            <td>Bahasa Spanyol</td>
-
-                                        </tr>
-                                                                                 <tr>
-                                            <td>9</td>
-                                            <td>Tania Siti</td>
-                                            <td>Bahasa Indonesia</td>
-
-                                        </tr>
-                                                                                                                         <tr>
-                                            <td>10</td>
-                                            <td>Miranda Kerr</td>
-                                            <td>Bahasa India</td>
-
-                                        </tr>
-                                                                                                                         <tr>
-                                            <td>11</td>
-                                            <td>Soepani</td>
-                                            <td>Bahasa Inggris</td>
-
-                                        </tr>
+													</tr>
+										<?php	}
+											} else {
+												//echo "0 results";
+											}
+										?>
                                     </tbody>
                                 </table>
                             </div>
@@ -164,7 +132,7 @@
         </div>
     </div>
     <div>
-		<a href="table.html" class="btn btn-danger btn-lg" style="margin-left:110px"><span class="glyphicon glyphicon-arrow-left"></span> Kembali </a>&nbsp;
+		<a href="jadwal.php" class="btn btn-danger btn-lg" style="margin-left:110px"><span class="glyphicon glyphicon-arrow-left"></span> Kembali </a>&nbsp;
     </div>
     <br>
     
