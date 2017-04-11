@@ -821,8 +821,9 @@
 	}	
 	$list[] = $string;	
 	
-	
-	$file = fopen("jadwal.csv","w");
+	$time = date("Ymd");
+	$filename = "jadwal-".$time.".csv";
+	$file = fopen($filename,"w");
 
 	foreach ($list as $line)
 	{
@@ -830,5 +831,6 @@
 	}
 
 	fclose($file);
-	mysqli_close($conn)
+	mysqli_close($conn);
+	echo $filename;
 ?>

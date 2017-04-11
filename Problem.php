@@ -35,8 +35,8 @@
 				$this->teachers[] = new Pengajar($pengajarDetail[0], $pengajarDetail[1], $pengajarDetail[2], $pengajarDetail[3],
 							$pengajarDetail[4], $pengajarDetail[5], $pengajarDetail[6], $pengajarDetail[7], $pengajarDetail[8]);
 			}
-			print_r($this->teachers);
-			echo "<br><br>";
+//			print_r($this->teachers);
+//			echo "<br><br>";
 			
 			
 			/**** BACA DATA KELAS KURSUS ****/
@@ -56,9 +56,9 @@
 				$this->courses[] = new Kelas($kelasKursusDetail[0], $kelasKursusDetail[1], $kelasKursusDetail[2], $kelasKursusDetail[3],
 								$kelasKursusDetail[4], $kelasKursusDetail[5], $kelasKursusDetail[6], $kelasKursusDetail[7]);
 			}
-			print_r($this->courses);
+//			print_r($this->courses);
 			
-			echo "<br><br>";
+//			echo "<br><br>";
 			
 			/**** BACA DATA RUANG ***/
 			$dataRuang = $_FILES['dataRuang']['tmp_name'];
@@ -76,9 +76,9 @@
 //				print_r($ruangDetail);
 				$this->rooms[] = new Ruang($ruang[0]);
 			}
-			print_r($this->rooms);
+//			print_r($this->rooms);
 			
-			echo "<br><br>";
+//			echo "<br><br>";
 			
 			$this->idChangedKelas = 0;
 			$this->idOldPengajar = 0;
@@ -133,7 +133,8 @@
 				$course->currentRuang = $this->rooms[$j]->getName();
 				
 			}
-			
+
+/*			
 			foreach ($this->courses as $course) {
 				echo $course->getName();
 				echo " ";
@@ -143,6 +144,7 @@
 				echo "<br>";
 			}
 			echo "<br>";
+*/
 		}
 		
 		public function solve($temperature, $descentRate, $n, $maxSteps) {
@@ -152,7 +154,7 @@
 			$tempEvalValue = $this->countConflictCourses();
 			
 			while($tempEvalValue > 0 && $stepCounter++ < $maxSteps) {
-				foreach ($this->courses as $course) {
+/*				foreach ($this->courses as $course) {
 					echo $course->getName();
 					echo " ";
 					echo $course->getCurrentRuang();
@@ -163,6 +165,7 @@
 				echo "Nilai Eval ";
 				echo $tempEvalValue;
 				echo "<br><br>";
+*/
 				for($i = 0; $i < $n; $i++) {
 					$this->modifySolution(); // temporary
 					$newEvalValue = 0;
@@ -180,7 +183,7 @@
 				}
 				$temperature = $temperature - $descentRate;
 			}
-			foreach ($this->courses as $course) {
+/*			foreach ($this->courses as $course) {
 				echo $course->getName();
 				echo " ";
 				echo $course->getCurrentRuang();
@@ -191,6 +194,7 @@
 			echo "Nilai Eval ";
 			echo $tempEvalValue;
 			echo "<br><br>";
+*/
 		}
 		
 		public function modifySolution() {
@@ -367,4 +371,7 @@
 	$problem = new Problem;
 	$problem->solve(1, 0.002, 10, 600);
 	$problem->saveToDatabase();
+	echo '<script type="text/javascript">
+			   window.location.href = (location.href).substr(0, (location.href).lastIndexOf("/")) + "/jadwal.php";
+		  </script>';
 ?>
